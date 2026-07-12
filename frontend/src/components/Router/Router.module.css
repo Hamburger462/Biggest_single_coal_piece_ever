@@ -1,0 +1,29 @@
+/* App shell for all routed pages. See Header.module.css for the full
+   token list - Quarry (background) and Ink Dark (text) are defined
+   there; repeated as literal values here since these are separate CSS
+   modules with no shared variable file yet. Worth promoting to a
+   :root-level tokens.css once the palette is used in a third place. */
+
+.main {
+    color: #221F1C;
+    font-family: "Lato", sans-serif;
+    padding: 1rem 2rem;
+}
+
+.section{
+    max-width: 72rem;
+    margin: auto;
+}
+
+/* Centers whatever each page renders as its root element, so individual
+   pages don't each need to re-implement the same max-width container. */
+/* .main > * {
+    max-width: 72rem;
+    margin: 0 auto;
+} */
+
+@media (max-width: 640px) {
+    .main {
+        padding: 1.75rem 1.25rem 3rem;
+    }
+}

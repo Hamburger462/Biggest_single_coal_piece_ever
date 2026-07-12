@@ -1,0 +1,145 @@
+#Chat-main{
+    display: flex;
+    gap: 2rem;
+}
+
+.Window{
+    background-color: #F7F5F0;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+#Form-main{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 50%;
+}
+
+#Form-img{
+    width: 100%;
+}
+
+#Add-icon{
+    width: 2rem;
+}
+
+.Form-input{
+    display: flex;
+    padding: 0.25rem;
+    cursor: pointer;
+    transition: 0.2s;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.3rem;
+}
+
+.Form-input:hover{
+    box-shadow: 0 0 0 0.1rem black inset;
+}
+
+#Form-text{
+    border: 2px solid;
+    padding: 0.4rem;
+    overflow-wrap: break-word;
+    border-radius: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+#Text-hint{
+    opacity: 0.7;
+}
+
+#Btn-container{
+    margin-top: 1.0rem;
+    display: flex;
+    gap: 0.8rem;
+    width: fit-content;
+    background-color: #FBF0DC;
+}
+
+.Form-btn{
+    all: unset;
+    display: block;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #E2DED4;
+    color: #221F1C;
+    transition: 0.2s;
+}
+
+.Form-btn:hover{
+    background-color: #D6D1C4;
+}
+
+.Form-btn:active{
+    background-color: #24507A;
+    color: #F5F3EE;
+}
+
+.Form-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #E2DED4;
+    color: #221F1C;
+}
+
+/* ---- Response-main only, everything above is unchanged ---- */
+
+#Response-main{
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 50%;
+    min-height: 12rem;
+}
+
+.Response-heading{
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.Response-loading{
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.Response-error{
+    color: #A3462F;
+    border: 1px solid #A3462F;
+    border-radius: 0.3rem;
+    padding: 0.5rem 0.7rem;
+}
+
+.Response-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.Response-item{
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.Response-item:last-child{
+    border-bottom: none;
+}
+
+.Response-result{
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.Response-raw{
+    opacity: 0.7;
+    font-style: italic;
+}

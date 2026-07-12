@@ -393,6 +393,9 @@ MINERAL_REGISTRY = {
 def build_vlm_dataset(dataset_dir):
     vlm_dataset = []
     
+    # Define your fixed target size per mineral
+    IMAGES_PER_MINERAL = 100
+    
     # Loop through the folders in the dataset directory
     for folder_name in os.listdir(dataset_dir):
         # Handle case variations (e.g., folder 'azurite' matches key 'Azurite')
@@ -407,12 +410,23 @@ def build_vlm_dataset(dataset_dir):
         if not os.path.isdir(folder_path):
             continue
             
-        # Loop through every image file inside that mineral folder
-        for img_name in os.listdir(folder_path):
-            # Ensure file is an image
-            if not img_name.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
-                continue
-                
+        # 1. Gather and validate all images in this folder
+        all_images = [
+            img for img in os.listdir(folder_path)
+            if img.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))
+        ]
+        
+        # 2. Caps the samples at 100, or takes everything if the folder has less
+        target_count = min(len(all_images), IMAGES_PER_MINERAL)
+        
+        # If a folder is completely empty, skip it safely
+        if target_count == 0:
+            continue
+            
+        selected_images = random.sample(all_images, target_count)
+        
+        # 3. Loop through the capped subset
+        for img_name in selected_images:
             img_path = os.path.join("data", folder_name, img_name)
             
             # Extract randomized variations of characteristics to keep the model robust
@@ -423,37 +437,22 @@ def build_vlm_dataset(dataset_dir):
             mohs = mineral_data["hardness"]["mohs_scale"]
             field_test = mineral_data["hardness"]["field_test"]
             
-            # 15 distinct, clean phrasing strategies (Zero hardcoded <image> tags here)
+            # 15 distinct, clean phrasing strategies
             user_phrasing = [
-                # 1. Generic Visual Check
                 "What mineral is this?",
-                # 2. Specimen Identification
                 "Identify this specimen.",
-                # 3. Chemical Formula Lookup
                 "Can you give me the chemical formula of this mineral?",
-                # 4. Chemical Profile Request
                 "What is the chemical compound profile of this mineral?",
-                # 5. Luster Hint
                 f"Field notes indicate this has a {rand_luster.lower()} luster. What is it?",
-                # 6. Color Hint
                 f"Identify this specimen. Context: It looks somewhat {rand_color.lower()}.",
-                # 7. Form/Shape Hint
                 f"This sample exhibits {rand_shape.lower()}. What mineral species is this?",
-                # 8. Multi-trait Observation
                 f"Based on the {rand_color.lower()} coloring and {rand_luster.lower()} look, identify the mineral.",
-                # 9. Hardness Value Info
                 f"This mineral sits around {mohs} on the Mohs hardness scale. Provide its name and formula.",
-                # 10. Scratch Testing Behavior
                 f"Scratch test results: {field_test} Name this mineral.",
-                # 11. Geographic / Formation Context
                 f"This was collected from {rand_spot.lower()}. Identify the crystal.",
-                # 12. Shape + Color Combo
                 f"I am cataloging a mineral showing {rand_shape.lower()} with a {rand_color.lower()} shade. What is the classification?",
-                # 13. Deep Physical Description
                 f"The specimen shows a {rand_luster.lower()} luster and a hardness of {mohs}. Can you classify it?",
-                # 14. Short Form Query
                 "Analyze the image and provide the mineral profile.",
-                # 15. Complex Field Log Style
                 f"Geological Log: Found in {rand_spot.lower()}, displays {rand_shape.lower()}, hardness {mohs}. What is the identity?"
             ]
             

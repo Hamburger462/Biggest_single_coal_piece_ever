@@ -70,10 +70,11 @@ DATA_JSON = "./llava_mineral_train.json"
 DATA_ROOT = "."  # image paths in the JSON are like "data/azurite/img.jpg"
 OUTPUT_DIR = "./llava-mineral-lora"
 
-MAX_LENGTH = 750     # truncate text (image tokens + prompt + JSON answer)
+MAX_LENGTH = 1024         # must comfortably exceed the ~576 image tokens LLaVA
+                           # expands "<image>" into, plus prompt + JSON answer
 PER_DEVICE_BATCH_SIZE = 1  # keep at 1 on 8GB cards
 GRAD_ACCUM_STEPS = 8       # effective batch size = 1 * 8 = 8
-NUM_EPOCHS = 2
+NUM_EPOCHS = 8
 LEARNING_RATE = 2e-4
 LORA_R = 16
 LORA_ALPHA = 32
@@ -145,19 +146,24 @@ class LlavaMineralDataset(Dataset):
         prompt_only = f"USER: <image>\n{question} ASSISTANT:"
         full_text = f"{prompt_only} {answer}"
 
-        # Tokenize the prompt alone first, to know where the answer starts
-        # so we can mask everything before it out of the loss.
-        prompt_ids = self.processor.tokenizer(
-            prompt_only, add_special_tokens=True
-        )["input_ids"]
+        # Encode the prompt alone (through the full processor, not the plain
+        # tokenizer) so "<image>" gets expanded into its ~576 image feature
+        # tokens exactly as it will in the full encode below. This tells us
+        # where the answer starts so we can mask everything before it out of
+        # the loss. No truncation/padding here - we want the true length.
+        prompt_ids = self.processor(
+            text=prompt_only, images=image, return_tensors="pt"
+        )["input_ids"][0]
 
         encoded = self.processor(
             text=full_text,
             images=image,
             return_tensors="pt",
-            padding="max_length",
+            padding=False,       # batch size is 1, so padding to a fixed
+                                  # length just adds dead compute - let each
+                                  # example be its natural (shorter) length
             truncation=True,
-            max_length=self.max_length,
+            max_length=self.max_length,  # safety net only, rarely hit now
         )
 
         input_ids = encoded["input_ids"][0]
@@ -167,9 +173,6 @@ class LlavaMineralDataset(Dataset):
         labels = input_ids.clone()
         prompt_len = min(len(prompt_ids), self.max_length)
         labels[:prompt_len] = -100
-        # Also mask out padding tokens
-        pad_token_id = self.processor.tokenizer.pad_token_id
-        labels[input_ids == pad_token_id] = -100
 
         return {
             "input_ids": input_ids,
@@ -196,14 +199,14 @@ def main():
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
     )
 
     model = LlavaForConditionalGeneration.from_pretrained(
         MODEL_ID,
         quantization_config=bnb_config,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         device_map="auto",
     )
     model.config.use_cache = False
@@ -219,7 +222,14 @@ def main():
         lora_dropout=LORA_DROPOUT,
         bias="none",
         task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        target_modules=[
+            "q_proj", "k_proj", "v_proj", "o_proj",
+            "gate_proj", "up_proj", "down_proj",
+            "linear_1", "linear_2",  # multi_modal_projector - lets the
+                                      # adapter also adjust how visual
+                                      # features map into language space,
+                                      # not just how the LM phrases output
+        ],
     )
     model = get_peft_model(model, lora_config)
     model.print_trainable_parameters()
@@ -239,14 +249,18 @@ def main():
         gradient_accumulation_steps=GRAD_ACCUM_STEPS,
         num_train_epochs=NUM_EPOCHS,
         learning_rate=LEARNING_RATE,
-        fp16=True,
+        warmup_ratio=0.05,
+        bf16=True,
         gradient_checkpointing=True,
         logging_steps=10,
         save_strategy="epoch",
         save_total_limit=2,
         report_to="none",
         remove_unused_columns=False,
-        dataloader_num_workers=0,  # safer default on Windows
+        dataloader_num_workers=2,  # parallel image loading; script is
+                                    # already guarded by __main__ so this
+                                    # is safe on Windows
+        dataloader_pin_memory=True,
         optim="paged_adamw_8bit",
     )
 
