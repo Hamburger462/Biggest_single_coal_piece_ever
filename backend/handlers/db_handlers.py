@@ -3,7 +3,7 @@ import uuid
 
 from firebase_admin import firestore
 
-from firebase import db, setDoc
+from backend.database.firebase import db, setDoc
 
 ENTITIES_COLLECTION = "Entities"
 

@@ -3,6 +3,7 @@ import type { ChangeEvent } from "react";
 
 import { useModel } from "../../hooks/useModel";
 import type { SingleResult, CandidateResult } from "../../hooks/useModel";
+import { useHistory } from "../../hooks/useHistory";
 
 import styles from "./ChatPage.module.css";
 
@@ -17,6 +18,7 @@ export default function ChatPage() {
     >(null);
 
     const { loading, error, predictCandidates, predictSingle } = useModel();
+    const { logSingle, logCandidates } = useHistory();
 
     const canSubmit = Boolean(image) && !loading;
 
@@ -37,18 +39,30 @@ export default function ChatPage() {
         if (!image) return;
 
         const result = await predictSingle({ image, user_query: text });
-        if (result) setResponse(result);
+        if (!result) return;
+
+        setResponse(result);
+
+        // Logging is fire-and-forget: a failure here shouldn't block the
+        // person from seeing their prediction, so useHistory's own
+        // error/loading state is left unused here rather than surfaced
+        // in this UI.
+        logSingle({ image_name: image.name, user_query: text, result });
     }
 
     async function makeCandidatesPrediction() {
         if (!image) return;
 
-        const result = await predictCandidates({
+        const results = await predictCandidates({
             image,
             user_query: text,
             candidates: 5,
         });
-        if (result) setResponse(result);
+        if (!results) return;
+
+        setResponse(results);
+
+        logCandidates({ image_name: image.name, user_query: text, results });
     }
 
     return (

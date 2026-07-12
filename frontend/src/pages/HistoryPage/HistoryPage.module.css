@@ -1,0 +1,149 @@
+.Window{
+    background-color: #F7F5F0;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+#History-main{
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 40rem;
+}
+
+#History-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.History-heading{
+    font-weight: 600;
+}
+
+.Refresh-btn{
+    all: unset;
+    display: block;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #E2DED4;
+    color: #221F1C;
+    transition: 0.2s;
+}
+
+.Refresh-btn:hover{
+    background-color: #D6D1C4;
+}
+
+.Refresh-btn:active{
+    background-color: #24507A;
+    color: #F5F3EE;
+}
+
+.Refresh-btn:disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #E2DED4;
+    color: #221F1C;
+}
+
+.History-loading{
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.History-error{
+    color: #A3462F;
+    border: 1px solid #A3462F;
+    border-radius: 0.3rem;
+    padding: 0.5rem 0.7rem;
+}
+
+.History-empty{
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.History-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.History-item{
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.History-item:last-child{
+    border-bottom: none;
+}
+
+.History-item-main{
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.History-image{
+    opacity: 0.7;
+    font-weight: 400;
+    font-size: 0.85rem;
+}
+
+.History-raw{
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.History-query{
+    margin-top: 0.2rem;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.History-time{
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.Candidates-section{
+    margin-top: 0.3rem;
+}
+
+.Candidates-toggle{
+    all: unset;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #24507A;
+    text-decoration: underline;
+}
+
+.Candidates-toggle:hover{
+    opacity: 0.8;
+}
+
+.Candidates-list{
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.Candidates-item{
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    opacity: 0.85;
+    padding: 0.2rem 0;
+}
