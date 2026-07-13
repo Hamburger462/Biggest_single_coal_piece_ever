@@ -1,0 +1,99 @@
+.Window{
+    background-color: #F7F5F0;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+.Window-important{
+    background-color: #FBF0DC;
+    border-left: 4px solid #B98B2A;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+#Home-main{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 40rem;
+    margin: 2rem auto;
+}
+
+#Hero{
+    text-align: center;
+}
+
+#Hero h1{
+    margin: 0 0 0.2rem;
+    font-size: 2rem;
+}
+
+#Hero-subtitle{
+    opacity: 0.7;
+    margin: 0 0 1rem;
+    font-weight: 600;
+}
+
+#Hero-description{
+    margin: 0;
+    line-height: 1.5;
+}
+
+#Problem-heading{
+    margin: 0 0 0.4rem;
+    font-weight: 600;
+}
+
+#Problem-text{
+    margin: 0;
+    line-height: 1.5;
+}
+
+#Cta-container{
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.Home-btn{
+    all: unset;
+    display: block;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #E2DED4;
+    color: #221F1C;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.Home-btn:hover{
+    background-color: #D6D1C4;
+}
+
+.Home-btn:active{
+    background-color: #24507A;
+    color: #F5F3EE;
+}
+
+.Home-btn-primary{
+    background-color: #24507A;
+    color: #F5F3EE;
+}
+
+.Home-btn-primary:hover{
+    background-color: #1c3f61;
+}
+
+@media (max-width: 640px){
+    #Home-main{
+        margin: 1rem;
+    }
+
+    #Cta-container{
+        flex-direction: column;
+    }
+}

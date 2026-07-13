@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router";
 import styles from "./Router.module.css";
 
-import HomePage from "../../pages/HomePage";
+import HomePage from "../../pages/HomePage/HomePage";
 import ChatPage from "../../pages/ChatPage/ChatPage";
 import HistoryPage from "../../pages/HistoryPage/HistoryPage";
+import AboutPage from "../../pages/AboutPage/AboutPage";
 // import RegisterPage from "../../pages/RegisterPage";
 // import LoginPage from "../../pages/LoginPage";
 
@@ -17,6 +18,8 @@ export default function Router() {
                     <Route path="/chat" element={<ChatPage />} />
 
                     <Route path="/history" element={<HistoryPage />} />
+
+                    <Route path="/about" element={<AboutPage />} />
 
                     {/* <Route path="/register" element={<RegisterPage />} />
                     <Route path="/login" element={<LoginPage />} /> */}

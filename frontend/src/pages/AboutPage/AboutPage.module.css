@@ -1,0 +1,67 @@
+.Window{
+    background-color: #F7F5F0;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+.Window-important{
+    background-color: #FBF0DC;
+    border-left: 4px solid #B98B2A;
+    padding: 0.8rem;
+    border-radius: 0.6rem;
+}
+
+#About-main{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 40rem;
+    margin: 2rem auto;
+}
+
+#About-main h1{
+    margin: 0 0 0.4rem;
+    font-size: 1.8rem;
+}
+
+#About-intro{
+    margin: 0;
+    line-height: 1.5;
+}
+
+#Model-heading,
+#Dataset-heading,
+#Limitations-heading{
+    margin: 0 0 0.4rem;
+    font-weight: 600;
+}
+
+#Model-text,
+#Dataset-text{
+    margin: 0;
+    line-height: 1.5;
+}
+
+#Dataset-text a{
+    color: #24507A;
+    font-weight: 600;
+}
+
+#Dataset-text a:hover{
+    text-decoration: none;
+}
+
+#Limitations-list{
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 640px){
+    #About-main{
+        margin: 1rem;
+    }
+}
